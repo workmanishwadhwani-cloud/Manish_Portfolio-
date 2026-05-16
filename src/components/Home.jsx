@@ -35,7 +35,7 @@ export default function Home() {
                             <a href="#contact" onClick={(e) => { e.preventDefault(); const el = document.getElementById('contact'); if (el && window.__lenis) { window.__lenis.scrollTo(el, { offset: -120, duration: 1.2 }); } else if (el) { el.scrollIntoView({ behavior: 'smooth' }); } }}>
                                 <MagneticButton className="btn-home1"><i className="fa-solid fa-arrow-right"></i> Hire Me</MagneticButton>
                             </a>
-                            <a href="/Manish_Wadhwani_cv.pdf" download="Manish_Wadhwani_cv.pdf" style={{ textDecoration: 'none' }}>
+                            <a href="/Manish_wadhwani_resume.pdf" download="Manish_wadhwani_resume.pdf" style={{ textDecoration: 'none' }}>
                                 <MagneticButton className="btn-home2"><i className="fa-solid fa-download"></i> Download CV</MagneticButton>
                             </a>
                         </div>
