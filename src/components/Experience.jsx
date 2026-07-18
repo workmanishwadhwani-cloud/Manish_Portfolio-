@@ -2,9 +2,9 @@ const experienceData = [
     {
         role: ' Developer Intern',
         company: 'Tracksoft Solutions Pvt. Ltd.',
-        period: 'Jan 2026 – Present',
+        period: 'Jan 2026 – April 2026',
         icon: 'fas fa-briefcase',
-        description: 'Working on the EnrolMe platform, building frontend features and integrating REST APIs with backend systems. Contributing to developing scalable web applications using Angular, Spring Boot, and SQL.',
+        description: 'Worked on the EnrolMe platform, building frontend features and integrating REST APIs with backend systems. Contributing to developing scalable web applications using Angular, Spring Boot, and SQL.',
         skills: ['Angular', 'Spring Boot', 'SQL', 'Git']
     },
     // {
