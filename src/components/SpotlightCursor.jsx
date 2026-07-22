@@ -79,7 +79,7 @@ export default function SpotlightCursor({ config = {}, className = '', ...rest }
     const spotlightConfig = {
         radius: 350,
         brightness: 0.15,
-        color: '#ff4d6d', // Set to match your main red/pink theme!
+        color: '#049dffff', // Set to match your main red/pink theme!
         smoothing: 0.1,
         ...config,
     };

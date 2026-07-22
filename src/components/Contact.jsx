@@ -4,6 +4,7 @@ import HackerText from './HackerText';
 export default function Contact() {
     const [form, setForm] = useState({ user_name: '', user_email: '', message: '' });
     const [status, setStatus] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -12,13 +13,24 @@ export default function Contact() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setStatus("Sending...");
+        const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-        const object = {
-            access_key: import.meta.env.VITE_WEB3FORMS_KEY,
-            name: form.user_name,
-            email: form.user_email,
-            message: form.message,
+        if (!accessKey) {
+            console.error("Web3Forms Configuration Error: VITE_WEB3FORMS_KEY environment variable is missing.");
+            setStatus("Form Configuration Error: Missing VITE_WEB3FORMS_KEY in deployment environment variables.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        setStatus("Sending message...");
+
+        const payload = {
+            access_key: accessKey,
+            name: form.user_name.trim(),
+            email: form.user_email.trim(),
+            message: form.message.trim(),
+            subject: `Portfolio Contact Form Submission from ${form.user_name.trim()}`,
+            from_name: "Portfolio Contact Form"
         };
 
         try {
@@ -28,29 +40,33 @@ export default function Contact() {
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },
-                body: JSON.stringify(object),
+                body: JSON.stringify(payload),
             });
 
             const result = await response.json();
 
-            if (result.success) {
-                setStatus("Message sent successfully!");
-
+            if (response.ok && result.success) {
+                setStatus("Message sent successfully! I will get back to you soon.");
                 setForm({
                     user_name: "",
                     user_email: "",
                     message: "",
                 });
-
-                setTimeout(() => setStatus(""), 4000);
+                setTimeout(() => setStatus(""), 5000);
             } else {
-                setStatus(result.message || "Something went wrong");
+                console.error("Web3Forms Submission Failed:", result);
+                setStatus(result.message || "Failed to send message. Please try again.");
             }
         } catch (error) {
-            console.error(error);
-            setStatus("Failed to send message");
+            console.error("Contact Form Network Error:", error);
+            setStatus("Network error occurred. Please check your internet connection and try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
+
+    const isSuccess = status.includes("successfully");
+    const isError = status.includes("Error") || status.includes("Failed") || status.includes("error");
 
     return (
         <section id="contact" className="section reveal">
@@ -120,6 +136,7 @@ export default function Contact() {
                                     name="user_name"
                                     value={form.user_name}
                                     onChange={handleChange}
+                                    disabled={isSubmitting}
                                 />
                             </div>
                             <div className="form-group">
@@ -130,6 +147,7 @@ export default function Contact() {
                                     name="user_email"
                                     value={form.user_email}
                                     onChange={handleChange}
+                                    disabled={isSubmitting}
                                 />
                             </div>
                             <div className="form-group">
@@ -140,10 +158,27 @@ export default function Contact() {
                                     required
                                     value={form.message}
                                     onChange={handleChange}
+                                    disabled={isSubmitting}
                                 ></textarea>
                             </div>
-                            {status && <p style={{ color: '#b3ffff', marginBottom: '12px' }}>{status}</p>}
-                            <button type="submit" className="glow-genz-button">Send Message</button>
+                            {status && (
+                                <p style={{
+                                    color: isSuccess ? '#10b981' : isError ? '#ff4d6d' : '#00f5ff',
+                                    marginBottom: '14px',
+                                    fontSize: '14px',
+                                    fontWeight: '500'
+                                }}>
+                                    {status}
+                                </p>
+                            )}
+                            <button
+                                type="submit"
+                                className="glow-genz-button"
+                                disabled={isSubmitting}
+                                style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                            >
+                                {isSubmitting ? "Sending..." : "Send Message"}
+                            </button>
                         </form>
                     </div>
                 </div>
